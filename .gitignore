@@ -1,0 +1,25 @@
+# Build artifacts
+/build/
+*.o
+*.a
+*.so
+*.dll
+*.dylib
+
+# Coverage and profiling
+*.gcda
+*.gcno
+*.gcov
+gmon.out
+
+# Editor/OS junk
+*~
+*.swp
+*.swo
+.DS_Store
+Thumbs.db
+
+# Logs and caches
+/logs/
+*.log
+
