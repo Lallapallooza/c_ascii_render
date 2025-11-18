@@ -4,11 +4,7 @@ Small real‑time 3D "ray‑marched" cube rendered as Unicode art in your termin
 Includes rain, mountains, a sun/light source, motion path, FPS/volume HUD and a tiny chiptune-style music loop.
 
 ## Demo
-
-<video width="640" controls>
-  <source src="https://github.com/Lallapallooza/c_ascii_render/raw/main/resources/demo.webm" type="video/webm">
-  Your browser does not support the video tag.
-</video>
+[demo.webm](https://github.com/user-attachments/assets/f907cf35-3599-407f-bd0e-a8714909bc69)
 
 ## Build
 
