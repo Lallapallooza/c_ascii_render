@@ -153,9 +153,9 @@ int main(int argc, char** argv) {
 
     // Initialize cube state
     CubeState cube = {
-        // Start with a slight tilt so we see multiple faces
+        // Initial tilt
         .rotation = mat3_multiply(mat3_rotate_y(0.6f), mat3_rotate_x(-0.4f)),
-        .angular_velocity = {0.25f, 0.35f, 0.10f},  // Faster initial rotation
+        .angular_velocity = {0.25f, 0.35f, 0.10f},
         .position = {0, 0, 0},
         .size = config.cube_size,
         .motion_mode = false,
@@ -164,7 +164,6 @@ int main(int argc, char** argv) {
 
     // Physics configuration
     PhysicsConfig physics_config = {
-        // More responsive and faster rolling by default
         .acceleration = 9.0f * config.rotation_speed,
         .damping = 0.97f,
         .max_velocity = 20.0f * config.rotation_speed

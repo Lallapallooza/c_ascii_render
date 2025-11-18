@@ -11,15 +11,13 @@ void physics_step(CubeState* state, InputState input, PhysicsConfig config, floa
 
     // Update motion animation if active
     if (state->motion_mode) {
-        // Advance the motion phase (controls the circular path)
-        state->motion_phase += dt * 0.8f;  // 0.8 rad/sec for smooth motion
+        // Advance motion phase
+        state->motion_phase += dt * 0.8f;  // 0.8 rad/sec
         if (state->motion_phase > 6.28318530718f) {  // 2*PI
             state->motion_phase -= 6.28318530718f;
         }
 
-        // Create a fully looping 3D orbit:
-        // X/Y form an ellipse around the origin, Z oscillates smoothly so
-        // start and end positions match exactly when the phase wraps.
+        // 3D orbit: X/Y ellipse, Z oscillates
         float radius_xy = 2.5f;
         float depth_amp = 2.0f;
         float depth_offset = -2.5f;
@@ -32,10 +30,7 @@ void physics_step(CubeState* state, InputState input, PhysicsConfig config, floa
     // Apply input as angular acceleration
     Vec3 input_accel = {0, 0, 0};
 
-    // Map W/S to X rotation, A/D to Y rotation
-    // Directions swapped relative to original so:
-    // - W = rotate up, S = rotate down
-    // - A = rotate left, D = rotate right
+    // W/S = rotate up/down, A/D = rotate left/right
     if (input.w_pressed) input_accel.x -= config.acceleration;
     if (input.s_pressed) input_accel.x += config.acceleration;
     if (input.a_pressed) input_accel.y -= config.acceleration;
@@ -45,8 +40,8 @@ void physics_step(CubeState* state, InputState input, PhysicsConfig config, floa
     state->angular_velocity = vec3_add(state->angular_velocity,
                                        vec3_multiply(input_accel, dt));
 
-    // Apply damping - correct formula for exponential decay
-    float damping_factor = expf(logf(config.damping) * dt * 60.0f); // Normalize to 60 FPS
+    // Apply damping (exponential decay)
+    float damping_factor = expf(logf(config.damping) * dt * 60.0f);
     state->angular_velocity = vec3_multiply(state->angular_velocity, damping_factor);
 
     // Clamp velocity

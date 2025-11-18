@@ -41,7 +41,7 @@ void input_poll(InputState* state, int timeout_ms) {
     state->m_pressed = false;
     state->volume_delta = 0;
 
-    // Read all available characters, last one wins.
+    // Read all available input
     while (read(STDIN_FILENO, &c, 1) == 1) {
         switch (c) {
             case 'w':

@@ -9,8 +9,7 @@
 #include <stdio.h>
 #include <math.h>
 
-// Beautiful shading ramp (dark to bright) using advanced Unicode characters
-// Creates ultra-smooth gradients with carefully selected characters
+// Shading ramp from dark to bright
 static const wchar_t SHADE_CHARS[] = L" ·⋅∙•∘○◌◍◎●◉⬤";
 static const int SHADE_LEVELS = (int)(sizeof(SHADE_CHARS) / sizeof(wchar_t)) - 1;
 
@@ -28,7 +27,7 @@ static float sample_shading(Vec3 hit_point, Vec3 normal, Vec3 camera_pos, CubeSt
 static void render_environment_background(Framebuffer* fb, FrameStats stats);
 static void render_rain_background(Framebuffer* fb, FrameStats stats);
 
-// Color codes for beautiful ANSI coloring
+// ANSI color codes
 #define COLOR_NONE      0
 #define COLOR_CUBE      1  // Cyan for cube
 #define COLOR_GROUND    2  // Dark gray for ground
@@ -87,7 +86,7 @@ void framebuffer_clear(Framebuffer* fb) {
 
 wchar_t intensity_to_char(float intensity, bool is_edge) {
     if (is_edge) {
-        // Use beautiful edge characters that vary with intensity
+        // Edge characters by intensity
         if (intensity > 0.8f) return L'◆';
         if (intensity > 0.6f) return L'◇';
         if (intensity > 0.4f) return L'◈';
@@ -117,7 +116,7 @@ static void render_environment_background(Framebuffer* fb, FrameStats stats) {
         horizon = height / 2;
     }
 
-    // Beautiful ground plane below horizon with gradient pattern
+    // Ground plane below horizon with gradient pattern
     for (int y = horizon; y < height; y++) {
         float t = (float)(y - horizon) / (float)(height - horizon + 1);
         wchar_t ch;
@@ -291,7 +290,6 @@ static float compute_soft_shadow(Vec3 point, Vec3 light_dir, float light_distanc
         if (dist < 0.0005f) {
             return 0.0f;
         }
-        // Lower scaling factor to soften transition between light and shadow
         shadow = fminf(shadow, 4.0f * dist / t);
         t += fmaxf(dist, 0.03f);
     }
@@ -318,7 +316,6 @@ static float compute_ambient_occlusion(Vec3 point, Vec3 normal, CubeState* cube)
         return 1.0f;
     }
 
-    // Slightly amplify occlusion, but less aggressively to keep shadows soft
     float ao = 1.0f - fminf(1.0f, (occlusion * 1.1f) / max_component);
     return ao;
 }
@@ -358,7 +355,6 @@ static float sample_shading(Vec3 hit_point, Vec3 normal, Vec3 camera_pos, CubeSt
     float shadow = compute_soft_shadow(shadow_origin, light_dir, light_distance, cube);
     float ambient_occlusion = compute_ambient_occlusion(hit_point, normal, cube);
 
-    // Raise ambient a bit so fully shadowed regions are not crushed
     float effective_ambient = light.ambient * 0.8f;
     float diffuse_spec = light.diffuse * diffuse + light.specular * specular_term;
 
@@ -368,17 +364,13 @@ static float sample_shading(Vec3 hit_point, Vec3 normal, Vec3 camera_pos, CubeSt
     float intensity = ambient_term + direct_term;
 
     intensity = fmaxf(0.0f, fminf(1.0f, intensity));
-    // Softer gamma so shadow gradients stay smooth
     return powf(intensity, 1.1f);
 }
 
 void render_cube(Framebuffer* fb, CubeState* cube, Light light, FrameStats stats) {
     framebuffer_clear(fb);
 
-    // Static environment: ground, mountains, distant buildings
     render_environment_background(fb, stats);
-
-    // Animated monochrome rain background behind the cube and sun
     render_rain_background(fb, stats);
 
     Vec3 camera_pos = {0, 0, 6.0f};
@@ -439,8 +431,7 @@ void render_cube(Framebuffer* fb, CubeState* cube, Light light, FrameStats stats
             int idx = y * fb->width + x;
             if (samples_hit > 0) {
                 float final_intensity = accumulated_intensity / (float)samples_hit;
-                // Depth-based falloff to enhance sense of depth:
-                // farther points get slightly dimmer.
+                // Depth-based falloff: farther points get dimmer
                 float depth_near = 3.5f;
                 float depth_far = 9.5f;
                 float depth_n = (nearest_depth - depth_near) / (depth_far - depth_near);
@@ -453,13 +444,10 @@ void render_cube(Framebuffer* fb, CubeState* cube, Light light, FrameStats stats
                 fb->chars[idx] = intensity_to_char(final_intensity, is_edge);
                 fb->depth[idx] = nearest_depth;
                 fb->colors[idx] = COLOR_CUBE;
-            } else {
-                // Leave existing background (rain or empty space) intact
             }
         }
     }
-    // Draw a big "sun" representing the light direction, projected into screen
-    // space around the cube. This is a visual hint for where the light comes from.
+    // Draw sun to indicate light direction
     if (fb->width > 8 && fb->height > 4) {
         // Direction from cube center to light
         Vec3 to_light_dir = vec3_normalize(vec3_subtract(light.position, cube->position));
@@ -521,7 +509,7 @@ void render_cube(Framebuffer* fb, CubeState* cube, Light light, FrameStats stats
         }
     }
 
-    // Beautiful FPS counter with box frame and volume below
+    // FPS counter with box frame and volume
     char fps_str[32];
     snprintf(fps_str, sizeof(fps_str), "%.1f", stats.fps);
     int fps_len = strlen(fps_str);
@@ -632,7 +620,6 @@ void render_cube(Framebuffer* fb, CubeState* cube, Light light, FrameStats stats
 }
 
 void framebuffer_display(Framebuffer* fb) {
-    // ANSI color codes for beautiful rendering
     static const char* color_codes[] = {
         "\033[0m",          // COLOR_NONE - reset
         "\033[96m",         // COLOR_CUBE - bright cyan

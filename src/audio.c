@@ -7,9 +7,7 @@
 #include <stdbool.h>
 #include <stdint.h>
 
-// Very small, self-contained "16-bit music" generator.
-// We stream signed 16-bit PCM to `aplay` via a pipe. If `aplay` is not
-// available or the pipe fails, we simply disable audio.
+// Stream signed 16-bit PCM to aplay via pipe.
 
 #define AUDIO_SAMPLE_RATE 44100.0
 #define TWO_PI 6.28318530717958647692
@@ -26,13 +24,13 @@ static float square_wave(double t, float freq) {
 }
 
 static float lofi_track_sample(double t) {
-    // Simple looping 2-bar chiptune-ish pattern at 120 BPM
+    // Looping 2-bar pattern at 120 BPM
     const double bpm = 120.0;
     const double beat_len = 60.0 / bpm;      // seconds per beat
     const double step_len = beat_len / 2.0;  // 8th notes
     int step = (int)(t / step_len) % 16;
 
-    // Very small melodic pattern (A minor-ish)
+    // Melodic pattern (A minor)
     static const float melody_freqs[16] = {
         440.0f, 440.0f, 523.25f, 493.88f,
         440.0f, 440.0f, 659.25f, 587.33f,
@@ -62,7 +60,7 @@ static float lofi_track_sample(double t) {
     }
 
     float sample = melody + bass + hat;
-    // Gentle soft clipping
+    // Soft clipping
     if (sample > 0.9f) sample = 0.9f;
     if (sample < -0.9f) sample = -0.9f;
     return sample * audio_volume;
@@ -101,7 +99,6 @@ int audio_start(void) {
                "-",                 // stdin
                (char*)NULL);
 
-        // If exec fails, just exit silently so we don't spam the terminal.
         _exit(0);
     }
 

@@ -13,7 +13,7 @@ float sdf_cube(Vec3 point, Vec3 cube_center, float half_extent, Mat3 rotation) {
     Mat3 inv_rot = mat3_transpose(rotation);
     local_point = mat3_multiply_vec3(inv_rot, local_point);
 
-    // Box SDF - correct implementation
+    // Box SDF
     Vec3 d = {fabsf(local_point.x) - half_extent,
               fabsf(local_point.y) - half_extent,
               fabsf(local_point.z) - half_extent};
