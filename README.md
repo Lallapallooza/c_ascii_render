@@ -5,12 +5,10 @@ Includes rain, mountains, a sun/light source, motion path, FPS/volume HUD and a 
 
 ## Demo
 
-<p align="center">
-  <video src="resources/demo.webm" controls width="640">
-    Your browser does not support the video tag.  
-    You can download the demo from <code>resources/demo.webm</code>.
-  </video>
-</p>
+<video width="640" controls>
+  <source src="https://github.com/Lallapallooza/c_ascii_render/raw/main/resources/demo.webm" type="video/webm">
+  Your browser does not support the video tag.
+</video>
 
 ## Build
 
